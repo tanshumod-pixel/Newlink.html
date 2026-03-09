@@ -63,7 +63,6 @@ gap:2px;
 .piece{
 width:100px;
 height:100px;
-border:1px solid black;
 background-size:300px 300px;
 cursor:pointer;
 border-radius:6px;
@@ -124,7 +123,7 @@ animation:spark 3s linear infinite;
 <div class="bar" id="bar"></div>
 </div>
 
-<div id="instruction">The faster you smile, the faster it fills 🙂</div>
+<div id="instruction">Smile more to fill faster 🙂</div>
 
 <div id="puzzle"></div>
 
@@ -151,7 +150,7 @@ progress+=1
 bar.style.width=progress+"%"
 
 if(progress==40){
-title.innerText="Scanning happiness levels....."
+title.innerText="Scanning happiness levels..."
 }
 
 if(progress==75){
@@ -186,7 +185,7 @@ createPuzzle()
 
 function createPuzzle(){
 
-< img src="image/photo.jpg">
+const img="photo.jpg"
 
 let pieces=[]
 
