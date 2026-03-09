@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Smile Detection Challenge</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -10,38 +11,46 @@
 <style>
 
 body{
-background:#0f172a;
-color:white;
+margin:0;
 font-family:Arial;
 text-align:center;
-margin:0;
+color:white;
+overflow:hidden;
+background:linear-gradient(-45deg,#ff9a9e,#fecfef,#fcb69f,#ffdde1);
+background-size:400% 400%;
+animation:bgmove 12s ease infinite;
+}
+
+@keyframes bgmove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
 .container{
-margin-top:80px;
+margin-top:90px;
 }
 
 .progress{
 width:320px;
-height:12px;
-background:#1e293b;
-border-radius:10px;
-margin:20px auto;
+height:14px;
+background:rgba(255,255,255,0.25);
+border-radius:20px;
+margin:25px auto;
 overflow:hidden;
 }
 
 .bar{
 height:100%;
 width:0%;
-background:#38bdf8;
-border-radius:10px;
-transition:width 0.2s linear;
+background:white;
+border-radius:20px;
+transition:width 0.3s;
 }
 
 #instruction{
-color:#94a3b8;
-font-size:14px;
-margin-top:10px;
+font-size:15px;
+opacity:0.9;
 }
 
 .hidden{
@@ -60,13 +69,43 @@ gap:2px;
 width:100px;
 height:100px;
 background-size:300px 300px;
-border:1px solid #1e293b;
 cursor:pointer;
+border-radius:4px;
+transition:transform 0.2s;
+}
+
+.piece:hover{
+transform:scale(1.05);
 }
 
 .final{
-margin-top:40px;
-font-size:22px;
+margin-top:30px;
+font-size:24px;
+line-height:1.6;
+}
+
+.heart{
+position:absolute;
+font-size:24px;
+animation:float 6s linear infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(100vh);opacity:0;}
+50%{opacity:1;}
+100%{transform:translateY(-10vh);opacity:0;}
+}
+
+.sparkle{
+position:absolute;
+bottom:0;
+font-size:16px;
+animation:spark 3s linear infinite;
+}
+
+@keyframes spark{
+0%{transform:translateY(0);opacity:1;}
+100%{transform:translateY(-200px);opacity:0;}
 }
 
 </style>
@@ -82,7 +121,7 @@ font-size:22px;
 <div class="bar" id="bar"></div>
 </div>
 
-<div id="instruction">More you smile the faster it fills 🙂</div>
+<div id="instruction">The more you smile, the faster it fills 🙂</div>
 
 <div id="puzzle" class="hidden"></div>
 
@@ -97,14 +136,14 @@ let progress=0
 let puzzle=document.getElementById("puzzle")
 let final=document.getElementById("final")
 
-function fillBar(){
+function startLoading(){
 
 let interval=setInterval(()=>{
 
 progress+=1
 bar.style.width=progress+"%"
 
-if(progress==40){
+if(progress==35){
 document.getElementById("title").innerText="Scanning happiness levels..."
 }
 
@@ -117,7 +156,7 @@ clearInterval(interval)
 startPuzzle()
 }
 
-},70)
+},80)
 
 }
 
@@ -144,11 +183,10 @@ for(let y=0;y<3;y++){
 for(let x=0;x<3;x++){
 
 let div=document.createElement("div")
-div.className="piece"
 
+div.className="piece"
 div.style.backgroundImage=`url(${img})`
 div.style.backgroundPosition=`-${x*100}px -${y*100}px`
-
 div.dataset.correct=y*3+x
 
 pieces.push(div)
@@ -158,11 +196,14 @@ pieces.push(div)
 
 pieces.sort(()=>Math.random()-0.5)
 
-pieces.forEach(p=>puzzle.appendChild(p))
+pieces.forEach((p,i)=>{
+p.dataset.current=i
+puzzle.appendChild(p)
+})
 
 let first=null
 
-puzzle.addEventListener("click",e=>{
+puzzle.onclick=(e)=>{
 
 if(!e.target.classList.contains("piece")) return
 
@@ -173,9 +214,13 @@ first.style.opacity="0.6"
 
 let second=e.target
 
-let temp=first.style.backgroundPosition
+let tempPos=first.style.backgroundPosition
 first.style.backgroundPosition=second.style.backgroundPosition
-second.style.backgroundPosition=temp
+second.style.backgroundPosition=tempPos
+
+let tempIndex=first.dataset.current
+first.dataset.current=second.dataset.current
+second.dataset.current=tempIndex
 
 first.style.opacity="1"
 first=null
@@ -184,44 +229,79 @@ checkPuzzle()
 
 }
 
-})
+}
 
 }
 
 function checkPuzzle(){
 
+let pieces=document.querySelectorAll(".piece")
 let correct=true
 
-document.querySelectorAll(".piece").forEach((p,i)=>{
-
-let correctX=(p.dataset.correct%3)*100
-let correctY=Math.floor(p.dataset.correct/3)*100
-
-let pos=p.style.backgroundPosition
-
-if(pos!=`-${correctX}px -${correctY}px`) correct=false
-
+pieces.forEach(p=>{
+if(p.dataset.correct!=p.dataset.current){
+correct=false
+}
 })
 
 if(correct){
 
 puzzle.classList.add("hidden")
 
+showCelebration()
+
+}
+
+}
+
+function showCelebration(){
+
 final.classList.remove("hidden")
 
-final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi the world looks better when you do."
+final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi....the world looks better when you do."
 
 confetti({
-particleCount:150,
-spread:70,
+particleCount:200,
+spread:80,
 origin:{y:0.6}
 })
 
-}
+setInterval(createHeart,400)
+setInterval(createSparkle,200)
 
 }
 
-fillBar()
+function createHeart(){
+
+let heart=document.createElement("div")
+
+heart.className="heart"
+heart.innerHTML="💗"
+
+heart.style.left=Math.random()*100+"vw"
+
+document.body.appendChild(heart)
+
+setTimeout(()=>heart.remove(),6000)
+
+}
+
+function createSparkle(){
+
+let spark=document.createElement("div")
+
+spark.className="sparkle"
+spark.innerHTML="✨"
+
+spark.style.left=Math.random()*100+"vw"
+
+document.body.appendChild(spark)
+
+setTimeout(()=>spark.remove(),3000)
+
+}
+
+startLoading()
 
 </script>
 
