@@ -2,74 +2,71 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mood Booster Machine</title>
+<title>Smile Detection Challenge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 
 body{
 background:#0f172a;
 color:white;
-font-family:Arial, Helvetica, sans-serif;
+font-family:Arial;
 text-align:center;
-overflow:hidden;
+margin:0;
 }
 
 .container{
-margin-top:120px;
+margin-top:80px;
 }
 
 .progress{
-width:300px;
+width:320px;
 height:12px;
 background:#1e293b;
 border-radius:10px;
 margin:20px auto;
+overflow:hidden;
 }
 
 .bar{
-height:12px;
+height:100%;
 width:0%;
 background:#38bdf8;
 border-radius:10px;
-animation:load 3s forwards;
+transition:width 0.2s linear;
 }
 
-@keyframes load{
-from{width:0%;}
-to{width:100%;}
-}
-
-.scan{
-width:300px;
-height:4px;
-background:linear-gradient(90deg,transparent,#22c55e,transparent);
-margin:30px auto;
-animation:scan 2s infinite;
-box-shadow:0 0 10px #22c55e;
-}
-
-@keyframes scan{
-0%{transform:translateY(0);}
-50%{transform:translateY(120px);}
-100%{transform:translateY(0);}
-}
-
-.slider{
-width:300px;
-margin:30px auto;
-}
-
-input[type=range]{
-width:100%;
+#instruction{
+color:#94a3b8;
+font-size:14px;
+margin-top:10px;
 }
 
 .hidden{
 display:none;
 }
 
+#puzzle{
+width:300px;
+margin:30px auto;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:2px;
+}
+
+.piece{
+width:100px;
+height:100px;
+background-size:300px 300px;
+border:1px solid #1e293b;
+cursor:pointer;
+}
+
 .final{
-font-size:22px;
 margin-top:40px;
+font-size:22px;
 }
 
 </style>
@@ -79,94 +76,152 @@ margin-top:40px;
 
 <div class="container">
 
-<div id="boot">
-<h2>Booting Mood Booster Machine...</h2>
-<p>Initializing positive vibes...</p>
+<h2 id="title">Initializing Smile Detection System...</h2>
+
 <div class="progress">
-<div class="bar"></div>
-</div>
-</div>
-
-<div id="scan" class="hidden">
-<h2>Scanning recent reactions...</h2>
-<div class="scan"></div>
-<p style="font-size:28px;">🥹💗</p>
-<p>High positivity detected.</p>
+<div class="bar" id="bar"></div>
 </div>
 
-<div id="slider" class="hidden">
-<h2>Detecting mood level...</h2>
-<div class="slider">
-<input type="range" min="0" max="100" value="10" id="mood">
-</div>
-<p>Mood Level: Smiling 🙂</p>
-</div>
+<div id="instruction">Smile more to fill faster 🙂</div>
+
+<div id="puzzle" class="hidden"></div>
 
 <div id="final" class="hidden final"></div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
 <script>
 
-function celebrate(){
-confetti({
-particleCount:120,
-spread:70,
-origin:{y:0.6}
-});
-}
+let bar=document.getElementById("bar")
+let progress=0
+let puzzle=document.getElementById("puzzle")
+let final=document.getElementById("final")
 
-function typeWriter(text,element,speed){
-let i=0;
-function typing(){
-if(i<text.length){
-element.innerHTML+=text.charAt(i);
-i++;
-setTimeout(typing,speed);
-}
-}
-typing();
-}
-
-setTimeout(()=>{
-document.getElementById("boot").classList.add("hidden");
-document.getElementById("scan").classList.remove("hidden");
-},3000);
-
-setTimeout(()=>{
-document.getElementById("scan").classList.add("hidden");
-document.getElementById("slider").classList.remove("hidden");
-
-let slider=document.getElementById("mood");
-let val=10;
+function fillBar(){
 
 let interval=setInterval(()=>{
-val+=2;
-slider.value=val;
-if(val>=100){
-clearInterval(interval);
+
+progress+=1
+bar.style.width=progress+"%"
+
+if(progress==40){
+document.getElementById("title").innerText="Scanning happiness levels..."
 }
-},40);
 
-},6000);
+if(progress==70){
+document.getElementById("title").innerText="Smile detected 🙂"
+}
 
-setTimeout(()=>{
-document.getElementById("slider").classList.add("hidden");
+if(progress>=100){
+clearInterval(interval)
+startPuzzle()
+}
 
-let final=document.getElementById("final");
-final.classList.remove("hidden");
+},70)
 
-typeWriter("System update complete.",final,40);
+}
 
-setTimeout(()=>{
-final.innerHTML+="<br><br>Keep smiling — the world looks better when you do.";
-},1800);
+function startPuzzle(){
 
-celebrate();
+document.getElementById("title").innerText="Final Step: Complete the Puzzle"
 
-},9000);
+document.querySelector(".progress").classList.add("hidden")
+document.getElementById("instruction").classList.add("hidden")
+
+puzzle.classList.remove("hidden")
+
+createPuzzle()
+
+}
+
+function createPuzzle(){
+
+const img="photo.jpg"
+
+let pieces=[]
+
+for(let y=0;y<3;y++){
+for(let x=0;x<3;x++){
+
+let div=document.createElement("div")
+div.className="piece"
+
+div.style.backgroundImage=`url(${img})`
+div.style.backgroundPosition=`-${x*100}px -${y*100}px`
+
+div.dataset.correct=y*3+x
+
+pieces.push(div)
+
+}
+}
+
+pieces.sort(()=>Math.random()-0.5)
+
+pieces.forEach(p=>puzzle.appendChild(p))
+
+let first=null
+
+puzzle.addEventListener("click",e=>{
+
+if(!e.target.classList.contains("piece")) return
+
+if(!first){
+first=e.target
+first.style.opacity="0.6"
+}else{
+
+let second=e.target
+
+let temp=first.style.backgroundPosition
+first.style.backgroundPosition=second.style.backgroundPosition
+second.style.backgroundPosition=temp
+
+first.style.opacity="1"
+first=null
+
+checkPuzzle()
+
+}
+
+})
+
+}
+
+function checkPuzzle(){
+
+let correct=true
+
+document.querySelectorAll(".piece").forEach((p,i)=>{
+
+let correctX=(p.dataset.correct%3)*100
+let correctY=Math.floor(p.dataset.correct/3)*100
+
+let pos=p.style.backgroundPosition
+
+if(pos!=`-${correctX}px -${correctY}px`) correct=false
+
+})
+
+if(correct){
+
+puzzle.classList.add("hidden")
+
+final.classList.remove("hidden")
+
+final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi the world looks better when you do."
+
+confetti({
+particleCount:150,
+spread:70,
+origin:{y:0.6}
+})
+
+}
+
+}
+
+fillBar()
 
 </script>
 
