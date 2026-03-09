@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mood Booster Machine</title>
+
+<style>
+
+body{
+background:#0f172a;
+color:white;
+font-family:Arial, Helvetica, sans-serif;
+text-align:center;
+overflow:hidden;
+}
+
+.container{
+margin-top:120px;
+}
+
+.progress{
+width:300px;
+height:12px;
+background:#1e293b;
+border-radius:10px;
+margin:20px auto;
+}
+
+.bar{
+height:12px;
+width:0%;
+background:#38bdf8;
+border-radius:10px;
+animation:load 3s forwards;
+}
+
+@keyframes load{
+from{width:0%;}
+to{width:100%;}
+}
+
+.scan{
+width:300px;
+height:4px;
+background:linear-gradient(90deg,transparent,#22c55e,transparent);
+margin:30px auto;
+animation:scan 2s infinite;
+box-shadow:0 0 10px #22c55e;
+}
+
+@keyframes scan{
+0%{transform:translateY(0);}
+50%{transform:translateY(120px);}
+100%{transform:translateY(0);}
+}
+
+.slider{
+width:300px;
+margin:30px auto;
+}
+
+input[type=range]{
+width:100%;
+}
+
+.hidden{
+display:none;
+}
+
+.final{
+font-size:22px;
+margin-top:40px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="boot">
+<h2>Booting Mood Booster Machine...</h2>
+<p>Initializing positive vibes...</p>
+<div class="progress">
+<div class="bar"></div>
+</div>
+</div>
+
+<div id="scan" class="hidden">
+<h2>Scanning recent reactions...</h2>
+<div class="scan"></div>
+<p style="font-size:28px;">🥹💗</p>
+<p>High positivity detected.</p>
+</div>
+
+<div id="slider" class="hidden">
+<h2>Detecting mood level...</h2>
+<div class="slider">
+<input type="range" min="0" max="100" value="10" id="mood">
+</div>
+<p>Mood Level: Smiling 🙂</p>
+</div>
+
+<div id="final" class="hidden final"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+
+function celebrate(){
+confetti({
+particleCount:120,
+spread:70,
+origin:{y:0.6}
+});
+}
+
+function typeWriter(text,element,speed){
+let i=0;
+function typing(){
+if(i<text.length){
+element.innerHTML+=text.charAt(i);
+i++;
+setTimeout(typing,speed);
+}
+}
+typing();
+}
+
+setTimeout(()=>{
+document.getElementById("boot").classList.add("hidden");
+document.getElementById("scan").classList.remove("hidden");
+},3000);
+
+setTimeout(()=>{
+document.getElementById("scan").classList.add("hidden");
+document.getElementById("slider").classList.remove("hidden");
+
+let slider=document.getElementById("mood");
+let val=10;
+
+let interval=setInterval(()=>{
+val+=2;
+slider.value=val;
+if(val>=100){
+clearInterval(interval);
+}
+},40);
+
+},6000);
+
+setTimeout(()=>{
+document.getElementById("slider").classList.add("hidden");
+
+let final=document.getElementById("final");
+final.classList.remove("hidden");
+
+typeWriter("System update complete.",final,40);
+
+setTimeout(()=>{
+final.innerHTML+="<br><br>Keep smiling — the world looks better when you do.";
+},1800);
+
+celebrate();
+
+},9000);
+
+</script>
+
+</body>
+</html>
