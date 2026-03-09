@@ -63,6 +63,7 @@ gap:2px;
 .piece{
 width:100px;
 height:100px;
+border:1px solid black;
 background-size:300px 300px;
 cursor:pointer;
 border-radius:6px;
@@ -139,6 +140,8 @@ let bar=document.getElementById("bar")
 let puzzle=document.getElementById("puzzle")
 let doneBtn=document.getElementById("doneBtn")
 let final=document.getElementById("final")
+let title=document.getElementById("title")
+let instruction=document.getElementById("instruction")
 
 let progress=0
 
@@ -160,7 +163,6 @@ title.innerText="Smile detected 🙂"
 if(progress>=100){
 
 clearInterval(interval)
-
 startPuzzle()
 
 }
@@ -185,8 +187,8 @@ createPuzzle()
 
 function createPuzzle(){
 
-const img="photo.jpg"
-
+< img src="image/photo.jpg">
+  
 let pieces=[]
 
 for(let y=0;y<3;y++){
@@ -249,7 +251,7 @@ function showCelebration(){
 
 final.style.display="block"
 
-final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling — the world looks better when you do."
+final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi, the world looks better when you do."
 
 confetti({
 particleCount:200,
