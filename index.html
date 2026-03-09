@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Smile Detection Challenge</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -12,10 +11,11 @@
 
 body{
 margin:0;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 text-align:center;
 color:white;
 overflow:hidden;
+
 background:linear-gradient(-45deg,#ff9a9e,#fecfef,#fcb69f,#ffdde1);
 background-size:400% 400%;
 animation:bgmove 12s ease infinite;
@@ -28,13 +28,13 @@ animation:bgmove 12s ease infinite;
 }
 
 .container{
-margin-top:90px;
+margin-top:80px;
 }
 
 .progress{
 width:320px;
 height:14px;
-background:rgba(255,255,255,0.25);
+background:rgba(255,255,255,0.3);
 border-radius:20px;
 margin:25px auto;
 overflow:hidden;
@@ -45,7 +45,7 @@ height:100%;
 width:0%;
 background:white;
 border-radius:20px;
-transition:width 0.3s;
+transition:width 0.2s;
 }
 
 #instruction{
@@ -70,12 +70,29 @@ width:100px;
 height:100px;
 background-size:300px 300px;
 cursor:pointer;
-border-radius:4px;
+border-radius:6px;
 transition:transform 0.2s;
 }
 
 .piece:hover{
 transform:scale(1.05);
+}
+
+#doneBtn{
+margin-top:20px;
+padding:10px 22px;
+font-size:16px;
+border:none;
+border-radius:25px;
+background:white;
+color:#ff4f9c;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+transition:0.3s;
+}
+
+#doneBtn:hover{
+transform:scale(1.1);
 }
 
 .final{
@@ -86,7 +103,7 @@ line-height:1.6;
 
 .heart{
 position:absolute;
-font-size:24px;
+font-size:26px;
 animation:float 6s linear infinite;
 }
 
@@ -125,6 +142,8 @@ animation:spark 3s linear infinite;
 
 <div id="puzzle" class="hidden"></div>
 
+<button id="doneBtn" class="hidden" onclick="finishPuzzle()">Puzzle Completed ✔</button>
+
 <div id="final" class="hidden final"></div>
 
 </div>
@@ -143,11 +162,11 @@ let interval=setInterval(()=>{
 progress+=1
 bar.style.width=progress+"%"
 
-if(progress==35){
+if(progress==40){
 document.getElementById("title").innerText="Scanning happiness levels..."
 }
 
-if(progress==70){
+if(progress==75){
 document.getElementById("title").innerText="Smile detected 🙂"
 }
 
@@ -168,6 +187,7 @@ document.querySelector(".progress").classList.add("hidden")
 document.getElementById("instruction").classList.add("hidden")
 
 puzzle.classList.remove("hidden")
+document.getElementById("doneBtn").classList.remove("hidden")
 
 createPuzzle()
 
@@ -187,7 +207,6 @@ let div=document.createElement("div")
 div.className="piece"
 div.style.backgroundImage=`url(${img})`
 div.style.backgroundPosition=`-${x*100}px -${y*100}px`
-div.dataset.correct=y*3+x
 
 pieces.push(div)
 
@@ -196,10 +215,7 @@ pieces.push(div)
 
 pieces.sort(()=>Math.random()-0.5)
 
-pieces.forEach((p,i)=>{
-p.dataset.current=i
-puzzle.appendChild(p)
-})
+pieces.forEach(p=>puzzle.appendChild(p))
 
 let first=null
 
@@ -214,43 +230,25 @@ first.style.opacity="0.6"
 
 let second=e.target
 
-let tempPos=first.style.backgroundPosition
+let temp=first.style.backgroundPosition
 first.style.backgroundPosition=second.style.backgroundPosition
-second.style.backgroundPosition=tempPos
-
-let tempIndex=first.dataset.current
-first.dataset.current=second.dataset.current
-second.dataset.current=tempIndex
+second.style.backgroundPosition=temp
 
 first.style.opacity="1"
 first=null
 
-checkPuzzle()
-
 }
 
 }
 
 }
 
-function checkPuzzle(){
-
-let pieces=document.querySelectorAll(".piece")
-let correct=true
-
-pieces.forEach(p=>{
-if(p.dataset.correct!=p.dataset.current){
-correct=false
-}
-})
-
-if(correct){
+function finishPuzzle(){
 
 puzzle.classList.add("hidden")
+document.getElementById("doneBtn").classList.add("hidden")
 
 showCelebration()
-
-}
 
 }
 
@@ -258,16 +256,16 @@ function showCelebration(){
 
 final.classList.remove("hidden")
 
-final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi....the world looks better when you do."
+final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi the world looks better when you do."
 
 confetti({
-particleCount:200,
+particleCount:220,
 spread:80,
 origin:{y:0.6}
 })
 
 setInterval(createHeart,400)
-setInterval(createSparkle,200)
+setInterval(createSparkle,250)
 
 }
 
