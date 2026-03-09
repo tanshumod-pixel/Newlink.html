@@ -63,6 +63,7 @@ gap:2px;
 .piece{
 width:100px;
 height:100px;
+border:1px solid black;
 background-size:300px 300px;
 cursor:pointer;
 border-radius:6px;
@@ -123,7 +124,7 @@ animation:spark 3s linear infinite;
 <div class="bar" id="bar"></div>
 </div>
 
-<div id="instruction">Smile more to fill faster 🙂</div>
+<div id="instruction">The faster you smile, the faster it fills 🙂</div>
 
 <div id="puzzle"></div>
 
@@ -150,7 +151,7 @@ progress+=1
 bar.style.width=progress+"%"
 
 if(progress==40){
-title.innerText="Scanning happiness levels..."
+title.innerText="Scanning happiness levels....."
 }
 
 if(progress==75){
@@ -197,7 +198,6 @@ let div=document.createElement("div")
 div.className="piece"
 
 div.style.backgroundImage=`url(${img})`
-div.style.backgroundSize="300px 300px"
 div.style.backgroundPosition=`-${x*100}px -${y*100}px`
 
 pieces.push(div)
@@ -250,7 +250,7 @@ function showCelebration(){
 
 final.style.display="block"
 
-final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling Khushi the world looks better when you do."
+final.innerHTML="🎉 Puzzle Completed!<br><br>System update complete.<br>Keep smiling — the world looks better when you do."
 
 confetti({
 particleCount:200,
