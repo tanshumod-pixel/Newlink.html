@@ -1,17 +1,18 @@
+
+Sujoy Moudgil <tanshumod@gmail.com>
+20:14 (1 hour ago)
+to me
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title> Detection Challenge</title>
+<title>Smile Detection Challenge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
-#puzzle{
-width:flex;
-flex-wrap:wrap;
-}
 
 body{
 margin:0;
@@ -59,7 +60,7 @@ font-size:15px;
 #puzzle{
 width:300px;
 margin:30px auto;
-display:grid;
+display:none;
 grid-template-columns:repeat(3,1fr);
 gap:2px;
 }
@@ -69,7 +70,6 @@ width:100px;
 height:100px;
 background-size:300px 300px;
 cursor:pointer;
-border:1px solid black;
 border-radius:6px;
 }
 
@@ -128,7 +128,7 @@ animation:spark 3s linear infinite;
 <div class="bar" id="bar"></div>
 </div>
 
-<div id="instruction">The more you smile, the faster it fills 🙂</div>
+<div id="instruction">Smile more to fill faster 🙂</div>
 
 <div id="puzzle"></div>
 
